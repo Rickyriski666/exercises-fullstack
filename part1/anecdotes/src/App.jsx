@@ -20,8 +20,10 @@ const App = () => {
 
   const handleNext = () => {
     const index = Math.floor(Math.random() * anecdotes.length);
-    setSelected(index);
+    selected !== index ? setSelected(index) : setSelected(index + 1);
   };
+  console.log(`value selected ${selected}`);
+  console.log(`value votes ${votes}`);
 
   const handleVote = () => {
     const newVotes = [...votes];
@@ -38,8 +40,6 @@ const App = () => {
         mostVotedIndexes.push(i);
       }
     }
-
-    console.log(mostVotedIndexes);
 
     return (
       <div>
