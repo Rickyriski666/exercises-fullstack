@@ -1,48 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Form from './components/Form';
 import Filter from './components/Filter';
 import Persons from './components/Persons';
+import api from './services/api';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: 1040123456, id: 1 },
-    { name: 'Ada Lovelace', number: 39445323523, id: 2 },
-    { name: 'Dan Abramov', number: 1243234345, id: 3 },
-    { name: 'Mary Poppendieck', number: 39236423122, id: 4 }
-  ]);
-
-  const handleAddPerson = (person) => {
-    const isDuplicateName = persons.some((dataPerson) => {
-      return dataPerson.name.toLowerCase() === person.name.toLowerCase();
-    });
-
-    const isDuplicateNumber = persons.some((dataPerson) => {
-      return dataPerson.number === person.number;
-    });
-
-    if (isDuplicateName) {
-      alert(`${person.name} is already added to phonebook`);
-    } else if (isDuplicateNumber) {
-      alert(`number ${person.number} is already added to phonebook`);
-    } else {
-      setPersons(persons.concat(person));
-    }
-  };
-
+  const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState('');
 
   const personsToShow = persons.filter((person) => {
     return person.name.toLowerCase().includes(filter.toLowerCase());
   });
 
+  useEffect(() => {
+    api.getAll().then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
+
+  console.log(persons);
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} setFilter={setFilter} />
       <h3>Add a new</h3>
-      <Form handleAddPerson={handleAddPerson} />
+      <Form persons={persons} setPersons={setPersons} />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} setPersons={setPersons} />
     </div>
   );
 };

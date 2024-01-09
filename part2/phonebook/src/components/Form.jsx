@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import api from '../services/api';
 
-export default function Form({ handleAddPerson }) {
+export default function Form({ persons, setPersons }) {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
@@ -12,20 +13,65 @@ export default function Form({ handleAddPerson }) {
     setNewNumber(event.target.value);
   };
 
-  const addPerson = (event) => {
+  const handleAddPerson = (event) => {
     event.preventDefault();
-    const personObject = {
+    const newPerson = {
       name: newName,
       number: newNumber,
-      id: newName
+      id: Math.floor(Math.random() * 1000)
     };
-    handleAddPerson(personObject);
-    setNewName('');
-    setNewNumber('');
+
+    const isDuplicateName = persons.find((dataPerson) => {
+      return dataPerson.name.toLowerCase() === newPerson.name.toLowerCase();
+    });
+
+    const isDuplicateNumber = persons.find((dataPerson) => {
+      return dataPerson.number === newPerson.number;
+    });
+
+    if (isDuplicateName) {
+      if (
+        window.confirm(
+          `${newPerson.name} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        api.update(isDuplicateName.id, newPerson).then((response) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== isDuplicateName.id ? person : response.data
+            )
+          );
+          setNewName('');
+          setNewNumber('');
+        });
+      }
+    } else if (isDuplicateNumber) {
+      if (
+        window.confirm(
+          `${newPerson.number} is already added to phonebook as ${isDuplicateNumber.name}, replace the old number with a new one?`
+        )
+      ) {
+        api.update(isDuplicateNumber.id, newPerson).then((response) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== isDuplicateNumber.id ? person : response.data
+            )
+          );
+          setNewName('');
+          setNewNumber('');
+        });
+      }
+    } else {
+      api.create(newPerson).then((response) => {
+        setPersons([...persons, response.data]);
+        setNewName('');
+        setNewNumber('');
+      });
+    }
   };
 
   return (
-    <form onSubmit={addPerson}>
+    <form onSubmit={handleAddPerson}>
       <div>
         name: <input value={newName} onChange={handleNameChange} />
       </div>

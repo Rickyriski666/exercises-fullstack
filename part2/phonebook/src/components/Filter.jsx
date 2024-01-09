@@ -5,7 +5,7 @@ export default function Filter({ filter, setFilter }) {
 
   return (
     <div>
-      <label htmlFor="filter">Filter shown with : </label>
+      <label>Filter shown with : </label>
       <input type="text" value={filter} onChange={handleFilterChange} />
     </div>
   );
