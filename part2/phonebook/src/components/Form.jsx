@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import api from '../services/api';
 
-export default function Form({ persons, setPersons }) {
+export default function Form(props) {
+  const { persons, setPersons, setMessage } = props;
+
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
@@ -66,6 +68,10 @@ export default function Form({ persons, setPersons }) {
         setPersons([...persons, response.data]);
         setNewName('');
         setNewNumber('');
+        setMessage(`Added ${newPerson.name}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
       });
     }
   };
