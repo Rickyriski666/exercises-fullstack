@@ -65,7 +65,7 @@ export default function Form(props) {
       }
     } else {
       api.create(newPerson).then((response) => {
-        setPersons([...persons, response.data]);
+        setPersons([...persons, newPerson]);
         setNewName('');
         setNewNumber('');
         setMessage(`Added ${newPerson.name}`);
