@@ -38,11 +38,7 @@ export default function Form(props) {
         )
       ) {
         api.update(isDuplicateName.id, newPerson).then((response) => {
-          setPersons(
-            persons.map((person) =>
-              person.id !== isDuplicateName.id ? person : response.data
-            )
-          );
+          setPersons(response.data);
           setNewName('');
           setNewNumber('');
         });
@@ -54,18 +50,14 @@ export default function Form(props) {
         )
       ) {
         api.update(isDuplicateNumber.id, newPerson).then((response) => {
-          setPersons(
-            persons.map((person) =>
-              person.id !== isDuplicateNumber.id ? person : response.data
-            )
-          );
+          setPersons(response.data);
           setNewName('');
           setNewNumber('');
         });
       }
     } else {
       api.create(newPerson).then((response) => {
-        setPersons([...persons, newPerson]);
+        setPersons(response.data);
         setNewName('');
         setNewNumber('');
         setMessage(`Added ${newPerson.name}`);
