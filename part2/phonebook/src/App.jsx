@@ -27,7 +27,12 @@ const App = () => {
       <Notification status={status} message={message} />
       <Filter filter={filter} setFilter={setFilter} />
       <h3>Add a new</h3>
-      <Form persons={persons} setPersons={setPersons} setMessage={setMessage} />
+      <Form
+        persons={persons}
+        setPersons={setPersons}
+        setMessage={setMessage}
+        setStatus={setStatus}
+      />
       <h2>Numbers</h2>
       <Persons
         persons={personsToShow}

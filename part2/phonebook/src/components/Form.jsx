@@ -2,7 +2,7 @@ import { useState } from 'react';
 import api from '../services/api';
 
 export default function Form(props) {
-  const { persons, setPersons, setMessage } = props;
+  const { persons, setPersons, setMessage, setStatus } = props;
 
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
@@ -38,7 +38,13 @@ export default function Form(props) {
         )
       ) {
         api.update(isDuplicateName.id, newPerson).then((response) => {
-          setPersons(response.data);
+          setPersons((prevPersons) =>
+            prevPersons.map((person) =>
+              person.id === isDuplicateName.id
+                ? { ...person, number: newPerson.number }
+                : person
+            )
+          );
           setNewName('');
           setNewNumber('');
         });
@@ -56,15 +62,25 @@ export default function Form(props) {
         });
       }
     } else {
-      api.create(newPerson).then((response) => {
-        setPersons(response.data);
-        setNewName('');
-        setNewNumber('');
-        setMessage(`Added ${newPerson.name}`);
-        setTimeout(() => {
-          setMessage(null);
-        }, 5000);
-      });
+      api
+        .create(newPerson)
+        .then((response) => {
+          setPersons([...persons, response.data]);
+          setNewName('');
+          setNewNumber('');
+          setMessage(`Added ${newPerson.name}`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          setStatus('error');
+          setMessage(error.response.data.error);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+          console.log(error.response.data.error);
+        });
     }
   };
 

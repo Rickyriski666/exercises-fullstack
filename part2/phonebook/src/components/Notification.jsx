@@ -5,11 +5,17 @@ export default function Notification({ status, message }) {
     return null;
   }
 
-  console.log(status);
+  if (status === 'succes') {
+    return <div className="message-success">{message}</div>;
+  }
 
-  return status === 'success' ? (
-    <div className="message-success">{message}</div>
-  ) : (
-    <div className="message-error">{message}</div>
-  );
+  if (status === 'error') {
+    return <div className="message-error">{message}</div>;
+  }
+
+  // return status === 'success' ? (
+  //   <div className="message-success">{message}</div>
+  // ) : (
+  //   <div className="message-error">{message}</div>
+  // );
 }
